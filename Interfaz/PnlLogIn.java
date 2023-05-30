@@ -1,4 +1,3 @@
-//package Interfaz;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -6,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.Box;
@@ -18,7 +18,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-class PnlLogIn extends PanelApp{
+class PnlLogIn extends PanelApp implements ActionListener{
     private JPanel pnlDatos;
     private JLabel lblImgLogo, lblTitle, lblTitle2, lblUser, lblPassword;
     private JButton btnLogIn;
@@ -34,8 +34,8 @@ class PnlLogIn extends PanelApp{
         // Panels 
         pnlDatos = new JPanel();
         pnlDatos.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        pnlDatos.setMaximumSize(new Dimension(240, 80));
-        pnlDatos.setPreferredSize(new Dimension(240, 80)); 
+        pnlDatos.setMaximumSize(new Dimension(260, 80));
+        pnlDatos.setPreferredSize(new Dimension(260, 80)); 
         pnlDatos.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Labels
@@ -59,10 +59,10 @@ class PnlLogIn extends PanelApp{
         lblPassword.setFont(new Font("", 0, 17));
         
         // Fields
-        FldUser = new JTextField(10);
+        FldUser = new JTextField(8);
         FldUser.setFont(new Font("", 0, 17));
 
-        FldPassword = new JPasswordField(10);
+        FldPassword = new JPasswordField(8);
         FldPassword.setFont(new Font("", 0, 17));
 
         // Buttons
@@ -74,7 +74,7 @@ class PnlLogIn extends PanelApp{
         
         // ActionListeners botones
         btnLogIn.addActionListener(this);
-
+      
         // Añadir componentes
         pnlDatos.add(lblUser);
         pnlDatos.add(FldUser);
@@ -94,6 +94,15 @@ class PnlLogIn extends PanelApp{
         this.setMaximumSize(new Dimension(600, 540));
         this.setPreferredSize(new Dimension(600, 540)); 
         this.setVisible(false);
+    }
+
+    public void actionPerformed(ActionEvent e){
+        if(controlEmpleados.verificarDatos(FldUser.getText(), String.valueOf(FldPassword.getPassword()))){
+            JOptionPane.showMessageDialog(this, "Acceso Concedido", "Verificado", JOptionPane.INFORMATION_MESSAGE);
+            Main.newApp.actionPerformed(e);
+        }else{
+            JOptionPane.showMessageDialog(this, "Acceso Denegado","Error",JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void limpiarCampos(){

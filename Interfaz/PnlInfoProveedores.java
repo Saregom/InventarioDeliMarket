@@ -2,7 +2,6 @@ import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +16,7 @@ import javax.swing.JLabel;
 
 import javax.swing.table.DefaultTableModel;
 
-public class PnlInfoProductos extends PanelApp implements ActionListener{
+public class PnlInfoProveedores extends PanelApp implements ActionListener{
     private JPanel panelTitulo, panelTabla, panelBotones;
     private JTable tablaInfoProductos;
     private String[] nombresColumnas;
@@ -26,7 +25,7 @@ public class PnlInfoProductos extends PanelApp implements ActionListener{
     private JLabel labelTitulo;
     private JButton btnVolver, btnActualizar;
             
-    public PnlInfoProductos(){
+    public PnlInfoProveedores(){
         initComponenetes();
     }
     
@@ -51,11 +50,11 @@ public class PnlInfoProductos extends PanelApp implements ActionListener{
         setDatosTabla();
 
         //Labels
-        labelTitulo = new JLabel("INFO OPERACIONES PRODUCTOS");
+        labelTitulo = new JLabel("INFO OPERACIONES PROVEEDORES");
         labelTitulo.setFont(new Font("", Font.BOLD, 20));
 
         // botones
-        btnVolver = new JButton("Volver a productos");
+        btnVolver = new JButton("Volver a proveedores");
         btnActualizar = new JButton("Actualizar");
         
         //ActionListeners botones
@@ -84,13 +83,13 @@ public class PnlInfoProductos extends PanelApp implements ActionListener{
     
     // agregar los datos a la tabla grafica
     private void setDatosTabla(){
-        datosFilas = new Object[controlProductos.obtenerInfoProductos().size()][4]; 
-        nombresColumnas = new String[]{"Codigo prod.", "Nombre prod.", "Fecha", "Operacion"};
+        datosFilas = new Object[controlProveedores.obtenerInfoProveedor().size()][4]; 
+        nombresColumnas = new String[]{"Codigo prov.", "Nombre prov.", "Fecha", "Operacion"};
         
         int fila=0;
-        for(InfoProducto infoProd : controlProductos.obtenerInfoProductos()){
-            datosFilas[fila][0] = infoProd.getProducto().getCodigo();
-            datosFilas[fila][1] = infoProd.getProducto().getNombre();
+        for(InfoProveedor infoProd : controlProveedores.obtenerInfoProveedor()){
+            datosFilas[fila][0] = infoProd.getProveedor().getCodigo();
+            datosFilas[fila][1] = infoProd.getProveedor().getNombre();
             datosFilas[fila][2] = infoProd.getFecha();
             datosFilas[fila][3] = infoProd.getOperacion();
             fila++;
@@ -98,7 +97,7 @@ public class PnlInfoProductos extends PanelApp implements ActionListener{
         DefaultTableModel model = new DefaultTableModel(datosFilas, nombresColumnas);
         tablaInfoProductos.setModel(model);
     }
-    
+
     // metodo para actualizar datos 
     public void actualizar(){
         setDatosTabla();

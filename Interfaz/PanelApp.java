@@ -1,8 +1,5 @@
-//package Interfaz;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -10,21 +7,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-class PanelApp extends JPanel implements ActionListener{
+class PanelApp extends JPanel{
     protected static ControlProductos controlProductos;
     protected static ControlProveedores controlProveedores;
     protected static ControlPedidos controlPedidos;
+    protected static ControlEmpleados controlEmpleados;
     protected ArrayList<JTextField> listFields;
+    protected static String informe;
 
     public PanelApp(){
         controlProductos = new ControlProductos();
         controlProveedores = new ControlProveedores();
         controlPedidos = new ControlPedidos();
-    }
-
-    // Action listener de botones o menu
-    public void actionPerformed(ActionEvent e){ 
-        Main.newApp.actionPerformed(e);
+        controlEmpleados = new ControlEmpleados();
     }
 
     // Verfifica textFiels vacios
@@ -38,10 +33,15 @@ class PanelApp extends JPanel implements ActionListener{
         return true;
     }
     
+    // No se eimplemento
     public void stilizeButton(JButton btn){
         btn.setFont(new Font("", 0, 17));
         btn.setBackground(Color.decode("#C3ECF4"));
         btn.setFocusable(false);
         btn.setBorderPainted(false);
+    }
+
+    public String getInforme(){
+      return informe;
     }
 }

@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -26,10 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-// import Productos;
-// import Producto;
-
-public class PnlProductos extends PanelApp{
+public class PnlProductos extends PanelApp implements ActionListener{
     private JFrame ventanaInforme; 
     private JPanel panelTitulo, panelTabla, panelDatos, panelBotones, panelVntInf;
     private JTable tablaProductos;
@@ -63,7 +61,7 @@ public class PnlProductos extends PanelApp{
         
         panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
-        panelBotones.setPreferredSize(new Dimension(500, 70));
+        panelBotones.setPreferredSize(new Dimension(520, 70));
         Border borde2 = new TitledBorder(new BevelBorder(BevelBorder.RAISED),"Seleccionar operacion");
         panelBotones.setBorder(borde2);
 
@@ -95,23 +93,6 @@ public class PnlProductos extends PanelApp{
         btnActualizar = new JButton("Actualizar");
         btnEliminar = new JButton("Eliminar");
         btnInforme = new JButton("Informe");
-        
-        //Segunda ventana
-        // ventanaInforme = new JFrame();
-        // ventanaInforme.setTitle("Informe");
-        
-        // panelVntInf = new JPanel();
-        // panelVntInf.setLayout(new GridLayout(3,1));
-        
-        // labelTituloInf = new JLabel("Los tres productos con mayor precio son:");
-        // labelTituloInf.setFont(fontCS);
-        
-        // labelP1 = new JLabel();
-        // labelP1.setFont(fontCS);
-        // labelP2 = new JLabel();
-        // labelP2.setFont(fontCS);
-        // labelP3 = new JLabel();
-        // labelP3.setFont(fontCS);
         
         //ActionListeners botones
         btnAgregar.addActionListener((ActionEvent evt) -> {
@@ -254,32 +235,8 @@ public class PnlProductos extends PanelApp{
             JOptionPane.showMessageDialog(this, "El producto NO existe", "Error", JOptionPane.ERROR_MESSAGE);
         } 
     }
-    
-    //  metodo que genera el informe sobre la base de datos(3 productos con mayor precio)
-    public void generarInforme(){
-        // ArrayList<Float> listaPrecios = new ArrayList<>();
-        // for(Producto prod : listaProductos.values()){
-        //     listaPrecios.add(prod.precio);
-        // }
-        // Collections.sort(listaPrecios);
-        // Collections.reverse(listaPrecios);
-        
-        // String n1="";
-        // String n2="";
-        // String n3="";
-        // for(Producto prod : listaProductos.values()){
-        //     if(listaPrecios.get(0)==prod.precio){
-        //         n1=prod.nombre;
-        //     }
-        //     if(listaPrecios.get(1)==prod.precio){
-        //         n2=prod.nombre;
-        //     }
-        //     if(listaPrecios.get(2)==prod.precio){
-        //         n3=prod.nombre;
-        //     }
-        // }
-        // labelP1.setText("1. "+n1);
-        // labelP2.setText("2. "+n2);
-        // labelP3.setText("3. "+n3);
+    public void actionPerformed(ActionEvent e){ 
+        informe = "Productos";
+        Main.newApp.actionPerformed(e);
     }
 }

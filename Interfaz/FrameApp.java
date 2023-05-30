@@ -1,16 +1,9 @@
-// package Interfaz;
 import java.awt.FlowLayout;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -19,7 +12,7 @@ public class FrameApp extends JFrame implements ActionListener{
     private JMenuBar menuBar;
     private JMenu menuOperaciones, menuCuenta;
     private JMenuItem menuItProductos, menuItProveedores, menuItPedidos, menuItCerrarSesion;
-    protected PanelApp panelActual, pnlLoguIn, pnlProdcutos, pnlProveedores, pnlPedidos, pnlInfoProductos;
+    protected PanelApp panelActual, pnlLoguIn, pnlProdcutos, pnlProveedores, pnlPedidos, pnlInfoProductos, pnlInfoProveedores;
     protected static Boolean sesionIniciada;
     
     public FrameApp(){
@@ -27,14 +20,12 @@ public class FrameApp extends JFrame implements ActionListener{
         super.setIconImage(new ImageIcon("Interfaz/imagenes/iconLogo.jpg").getImage());
 
         panelActual = new PanelApp();
-
         pnlLoguIn = new PnlLogIn();
-
         pnlProdcutos = new PnlProductos();
         pnlInfoProductos = new PnlInfoProductos();
-
         pnlProveedores = new PnlProveedores();
         pnlPedidos = new PnlPedidos();
+        pnlInfoProveedores = new PnlInfoProveedores();
         
         showComponents();
     }
@@ -74,9 +65,10 @@ public class FrameApp extends JFrame implements ActionListener{
         this.add(panelActual);
         this.add(pnlLoguIn);
         this.add(pnlProdcutos);
-        this.add(pnlProveedores);
         this.add(pnlPedidos);
+        this.add(pnlProveedores);
         this.add(pnlInfoProductos);
+        this.add(pnlInfoProveedores);
 
         this.setVisible(true);
         this.setSize(600, 540);
@@ -90,27 +82,33 @@ public class FrameApp extends JFrame implements ActionListener{
         String eventStr = e.getActionCommand();
         menuBar.setVisible(true);
 
-        if(e.getSource()==menuItCerrarSesion){
+        if(e.getSource() == menuItCerrarSesion){
             super.setTitle("DeliMarket - inicio de sesion");
             ((PnlLogIn) pnlLoguIn).limpiarCampos();
             menuBar.setVisible(false);
             changePanel(pnlLoguIn);
             
-        }else if(e.getSource()==menuItProductos || eventStr.equals("Iniciar sesion") || eventStr.equals("Volver a productos")){
+        }else if(e.getSource() == menuItProductos || eventStr.equals("Iniciar sesion") || eventStr.equals("Volver a productos")){
             super.setTitle("DeliMarket - productos");  
             changePanel(pnlProdcutos);
 
-        }else if(e.getSource()==menuItProveedores){
+        }else if(e.getSource() == menuItProveedores || eventStr.equals("Volver a proveedores")){
             super.setTitle("DeliMarket - proveedores");  
             changePanel(pnlProveedores);
 
-        }else if(e.getSource()==menuItPedidos){
+        }else if(e.getSource() == menuItPedidos){
             super.setTitle("DeliMarket - pedidos");  
             changePanel(pnlPedidos);
 
         }else if(eventStr.equals("Informe")){
-            super.setTitle("DeliMarket - informe de productos");  
-            changePanel(pnlInfoProductos);
+            if(panelActual.getInforme().equals("Productos")){
+              super.setTitle("DeliMarket - informe de productos");  
+              changePanel(pnlInfoProductos);
+            }
+            if(panelActual.getInforme().equals("Proveedores")){
+              super.setTitle("DeliMarket - informe de proveedores");  
+              changePanel(pnlInfoProveedores);
+            }
         }
     }    
 

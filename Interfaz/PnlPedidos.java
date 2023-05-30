@@ -1,4 +1,3 @@
-// package Interfaz;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,9 +24,6 @@ import javax.swing.JOptionPane;
 
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
-// import Productos;
-// import Producto;
 
 public class PnlPedidos extends PanelApp{
     private JFrame ventanaInforme; 
@@ -85,7 +81,6 @@ public class PnlPedidos extends PanelApp{
         labelNom = new JLabel("Proveedor:");
         labelCate = new JLabel("Producto:");
         labelCont = new JLabel("Cantidad:");
-        // String[] txtFileds = {"Codigo","Fecha","Proveedor","Producto","Cantidad"};
 
         listFields = new ArrayList<JTextField>();
 
@@ -96,37 +91,14 @@ public class PnlPedidos extends PanelApp{
         // botones
         btnHacerPedido = new JButton("Hacer pedido");
         btnCancelar = new JButton("Cancelar pedido");
-        //btnInforme = new JButton("Informe");
-        
-        //Segunda ventana
-        // ventanaInforme = new JFrame();
-        // ventanaInforme.setTitle("Informe");
-        
-        // panelVntInf = new JPanel();
-        // panelVntInf.setLayout(new GridLayout(3,1));
-        
-        // labelTituloInf = new JLabel("Los tres productos con mayor precio son:");
-        // labelTituloInf.setFont(fontCS);
-        
-        // labelP1 = new JLabel();
-        // labelP1.setFont(fontCS);
-        // labelP2 = new JLabel();
-        // labelP2.setFont(fontCS);
-        // labelP3 = new JLabel();
-        // labelP3.setFont(fontCS);
         
         //ActionListeners botones
         btnHacerPedido.addActionListener((ActionEvent evt) -> {
-            capturaErrores("AGREGAR");
+            capturaErrores("HACER");
         });
         btnCancelar.addActionListener((ActionEvent ae) -> {
-            capturaErrores("BORRAR");
+            capturaErrores("CANCELAR");
         });
-        // btnInforme.addActionListener((ActionEvent ae) -> {
-        //     // generarInforme();
-        //     // ventanaInforme(); 
-        //     ventanaInforme.setVisible(false);
-        // });
         
         tablaProveedores.addMouseListener(new MouseAdapter(){
             @Override
@@ -156,7 +128,6 @@ public class PnlPedidos extends PanelApp{
         
         panelBotones.add(btnHacerPedido);
         panelBotones.add(btnCancelar);
-        // panelBotones.add(btnInforme);
         
         this.add(panelTitulo);
         this.add(panelTabla);
@@ -169,23 +140,6 @@ public class PnlPedidos extends PanelApp{
         this.setLayout(new FlowLayout());
     }  
     
-    // private void ventanaInforme(){
-    //     panelVntInf.add(labelP1);
-    //     panelVntInf.add(labelP2);
-    //     panelVntInf.add(labelP3);
-        
-    //     ventanaInforme.add(labelTituloInf);
-    //     ventanaInforme.add(panelVntInf);
-        
-    //     ventanaInforme.setVisible(true);
-    //     ventanaInforme.setSize(450, 187);
-    //     ventanaInforme.setLocationRelativeTo(this);
-    //     ventanaInforme.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 10));
-    // }
-
-    // Verificar un campo vacio
-    
-    
     // capturar errores en campos
     private void capturaErrores(String accion){
         if(campoVacio(listFields)){
@@ -195,14 +149,21 @@ public class PnlPedidos extends PanelApp{
                 String prod = listFields.get(2).getText();
                 int cant = Integer.valueOf(listFields.get(3).getText());
 
-                //Producto producto = new Producto(cod, prov, prod, cant);
+                if(controlProveedores.existeNombreProveedor(prov)){
+                    Proveedor proveedor = controlProveedores.obtenerProveedor(prov);
+                    Producto producto = new Producto(0, prod, 0, cant);
+
+                    Pedido pedido = new Pedido(cod, proveedor, producto, cant, "Enviando");
             
-                // switch(accion){
-                //     case "AGREGAR": agregar(producto); break;
-                //     case "ACTUALIZAR": actualizar(producto); break;
-                //     case "BORRAR": borrar(producto); break;
-                //     default: break;
-                // }
+                    switch(accion){
+                        case "HACER": hacerPedido(pedido); break;
+                        case "CANCELAR": cancelarPedido(pedido); break;
+                        default: break;
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(this, "El proveedor No existe", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
             }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(this, "Los campos codigo/cantidad, deben ser de tipo numerico", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -211,8 +172,8 @@ public class PnlPedidos extends PanelApp{
     
     // agregar los datos a la tabla grafica
     private void setDatosTabla(){
-        datosFilas = new Object[controlPedidos.obtenerPedidos().size()][5]; 
-        nombresColumnas = new String[]{"Codigo", "Proveedor", "Producto", "Cantidad", "Fecha"};
+        datosFilas = new Object[controlPedidos.obtenerPedidos().size()][6]; 
+        nombresColumnas = new String[]{"Codigo", "Proveedor", "Producto", "Cantidad", "Fecha", "Estado"};
     
         int fila=0;
         for(Pedido ped : controlPedidos.obtenerPedidos()){
@@ -221,6 +182,7 @@ public class PnlPedidos extends PanelApp{
             datosFilas[fila][2] = ped.getProducto().getNombre();
             datosFilas[fila][3] = ped.getCantidad();
             datosFilas[fila][4] = ped.getFecha();
+            datosFilas[fila][5] = ped.getEstado();
             fila++;
         }
         DefaultTableModel model = new DefaultTableModel(datosFilas, nombresColumnas);
@@ -228,75 +190,29 @@ public class PnlPedidos extends PanelApp{
     }
     
     // metodo para agreagar datos  
-    // public void agregar(Producto producto){
-    //     if(controlProveedores.existeProdcuto(producto.getCodigo(), producto.getNombre())){
-    //         JOptionPane.showMessageDialog(this, "El proveedor ya existe", "Error", JOptionPane.ERROR_MESSAGE);
-    //     }else{
-    //         int opcion = JOptionPane.showConfirmDialog(this, "¿Deses agregar el nuevo proveedor: "+producto.getNombre()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
+    public void hacerPedido(Pedido pedido){
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Deses hacer el nuevo pedido de: "+pedido.getProducto().getCantidad()+" "+pedido.getProducto().getNombre()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
 
-    //         if(opcion == 0){
-    //             controlProveedores.agregarProdcuto(producto);
-    //             setDatosTabla();
-    //             JOptionPane.showMessageDialog(this, "El provedor fue agregado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
-    //         }
-    //     }
-    // }
+        if(opcion == 0){
+            controlPedidos.hacerPedido(pedido);
+            setDatosTabla();
+            JOptionPane.showMessageDialog(this, "El pedido fue creado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 
-    // // metodo para actualizar datos 
-    // public void actualizar(Producto producto){
-    //     if(controlProveedores.existeProdcuto(producto.getCodigo(), "")){
-    //         int opcion = JOptionPane.showConfirmDialog(this, "¿Deses actualizar el proveedor con codigo: "+producto.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
+    //metodo para borrar datos 
+    public void cancelarPedido(Pedido pedido){
+        if(controlPedidos.existePedido(pedido.getCodigo())){
+            int opcion = JOptionPane.showConfirmDialog(this, "¿Deseas cancelar el pedido con codigo: "+pedido.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
 
-    //         if(opcion == 0){
-    //             controlProveedores.actualizarProdcuto(producto);
-    //             setDatosTabla();
-    //             JOptionPane.showMessageDialog(this, "El proveedor fue actualizado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
-    //         }
-    //     }else{
-    //         JOptionPane.showMessageDialog(this, "El proveedor NO existe", "Error", JOptionPane.ERROR_MESSAGE);
-    //     } 
-    // }
-
-    // //metodo para borrar datos 
-    // public void borrar(Producto producto){
-    //     if(controlProveedores.existeProdcuto(producto.getCodigo(), "")){
-    //         int opcion = JOptionPane.showConfirmDialog(this, "¿Deseas borrar el proveedor con codigo: "+producto.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
-
-    //         if(opcion == 0){
-    //             controlProveedores.eliminarProdcuto(producto.getCodigo());
-    //             setDatosTabla();
-    //             JOptionPane.showMessageDialog(this, "El proveedor fue borrado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
-    //         }
-    //     }else{
-    //         JOptionPane.showMessageDialog(this, "El proveedor NO existe", "Error", JOptionPane.ERROR_MESSAGE);
-    //     } 
-    // }
+            if(opcion == 0){
+                controlPedidos.cancelarPedido(pedido.getCodigo());
+                setDatosTabla();
+                JOptionPane.showMessageDialog(this, "El pedido fue cancelado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "El pedido NO existe", "Error", JOptionPane.ERROR_MESSAGE);
+        } 
+    }
     
-    //  metodo que genera el informe sobre la base de datos(3 productos con mayor precio)
-    // public void generarInforme(){
-        // ArrayList<Float> listaPrecios = new ArrayList<>();
-        // for(Producto prod : listaProductos.values()){
-        //     listaPrecios.add(prod.precio);
-        // }
-        // Collections.sort(listaPrecios);
-        // Collections.reverse(listaPrecios);
-        
-        // String n1="";
-        // String n2="";
-        // String n3="";
-        // for(Producto prod : listaProductos.values()){
-        //     if(listaPrecios.get(0)==prod.precio){
-        //         n1=prod.nombre;
-        //     }
-        //     if(listaPrecios.get(1)==prod.precio){
-        //         n2=prod.nombre;
-        //     }
-        //     if(listaPrecios.get(2)==prod.precio){
-        //         n3=prod.nombre;
-        //     }
-        // }
-        // labelP1.setText("1. "+n1);
-        // labelP2.setText("2. "+n2);
-        // labelP3.setText("3. "+n3);
-    // }
 }

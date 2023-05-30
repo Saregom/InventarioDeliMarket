@@ -1,18 +1,18 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-class InfoProducto {
-    private Producto producto;
+class InfoProveedor {
+    private Proveedor producto;
     private String fecha; 
     private String operacion; 
     
-    public InfoProducto(Producto producto, String operacion){ 
+    public InfoProveedor(Proveedor producto, String operacion){ 
         this.producto = producto;
         this.fecha = setFecha();
         this.operacion = operacion;
     }
 
-    public Producto getProducto(){
+    public Proveedor getProveedor(){
         return this.producto;
     }
     public String getFecha(){
@@ -21,6 +21,7 @@ class InfoProducto {
     public String getOperacion(){
         return this.operacion;
     }
+
     public String setFecha(){
         LocalDateTime tiempo = LocalDateTime.now();
         return tiempo.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));

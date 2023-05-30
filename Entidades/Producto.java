@@ -1,8 +1,9 @@
-// package Entidades;
-
 class Producto {
     private int codigo; 
+    private String categoria;
     private String nombre;
+    private String descripcion;
+    private String fechaVencimiento;
     private double precio;
     private int cantidad; 
     

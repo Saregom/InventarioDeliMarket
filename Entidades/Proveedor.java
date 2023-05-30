@@ -23,6 +23,18 @@ class Proveedor {
     public int getContacto(){
         return this.contacto;
     }
+    public void setCodigo(int codigo){
+        this.codigo = codigo;
+    }
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+    public void setCategoria(String categoria){
+        this.categoria = categoria;
+    }
+    public void setContacto(int contacto){
+        this.contacto = contacto;
+    }
 }
 
 /* 

@@ -1,4 +1,3 @@
-// package Interfaz;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -9,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -26,10 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-// import Productos;
-// import Producto;
-
-public class PnlProveedores extends PanelApp{
+public class PnlProveedores extends PanelApp implements ActionListener{
     private JFrame ventanaInforme; 
     private JPanel panelTitulo, panelTabla, panelDatos, panelBotones, panelVntInf;
     private JTable tablaProveedores;
@@ -63,7 +60,7 @@ public class PnlProveedores extends PanelApp{
         
         panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 10));
-        panelBotones.setPreferredSize(new Dimension(500, 70));
+        panelBotones.setPreferredSize(new Dimension(520, 70));
         Border borde2 = new TitledBorder(new BevelBorder(BevelBorder.RAISED),"Seleccionar operacion");
         panelBotones.setBorder(borde2);
 
@@ -96,23 +93,6 @@ public class PnlProveedores extends PanelApp{
         btnEliminar = new JButton("Eliminar");
         btnInforme = new JButton("Informe");
         
-        //Segunda ventana
-        // ventanaInforme = new JFrame();
-        // ventanaInforme.setTitle("Informe");
-        
-        // panelVntInf = new JPanel();
-        // panelVntInf.setLayout(new GridLayout(3,1));
-        
-        // labelTituloInf = new JLabel("Los tres productos con mayor precio son:");
-        // labelTituloInf.setFont(fontCS);
-        
-        // labelP1 = new JLabel();
-        // labelP1.setFont(fontCS);
-        // labelP2 = new JLabel();
-        // labelP2.setFont(fontCS);
-        // labelP3 = new JLabel();
-        // labelP3.setFont(fontCS);
-        
         //ActionListeners botones
         btnAgregar.addActionListener((ActionEvent evt) -> {
             capturaErrores("AGREGAR");
@@ -123,11 +103,7 @@ public class PnlProveedores extends PanelApp{
         btnEliminar.addActionListener((ActionEvent ae) -> {
             capturaErrores("BORRAR");
         });
-        btnInforme.addActionListener((ActionEvent ae) -> {
-            // generarInforme();
-            // ventanaInforme(); 
-            ventanaInforme.setVisible(false);
-        });
+        btnInforme.addActionListener(this);
         
         tablaProveedores.addMouseListener(new MouseAdapter(){
             @Override
@@ -171,20 +147,6 @@ public class PnlProveedores extends PanelApp{
         this.setLayout(new FlowLayout());
     }  
     
-    // private void ventanaInforme(){
-    //     panelVntInf.add(labelP1);
-    //     panelVntInf.add(labelP2);
-    //     panelVntInf.add(labelP3);
-        
-    //     ventanaInforme.add(labelTituloInf);
-    //     ventanaInforme.add(panelVntInf);
-        
-    //     ventanaInforme.setVisible(true);
-    //     ventanaInforme.setSize(450, 187);
-    //     ventanaInforme.setLocationRelativeTo(this);
-    //     ventanaInforme.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 10));
-    // }
-    
     // capturar errores en campos
     private void capturaErrores(String accion){
         if(campoVacio(listFields)){
@@ -196,14 +158,12 @@ public class PnlProveedores extends PanelApp{
 
                 Proveedor proveedor = new Proveedor(cod2, nom, cate2, cont2);
 
-                //Producto producto = new Producto(cod, prov, prod, cant);
-            
-                // switch(accion){
-                //     case "AGREGAR": agregar(producto); break;
-                //     case "ACTUALIZAR": actualizar(producto); break;
-                //     case "BORRAR": borrar(producto); break;
-                //     default: break;
-                // }
+                 switch(accion){
+                     case "AGREGAR": agregar(proveedor); break;
+                     case "ACTUALIZAR": actualizar(proveedor); break;
+                     case "BORRAR": borrar(proveedor); break;
+                     default: break;
+                }
             }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(this, "Los campos codigo/contacto, deben ser de tipo numerico", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -228,75 +188,54 @@ public class PnlProveedores extends PanelApp{
     }
     
     // metodo para agreagar datos  
-    // public void agregar(Producto producto){
-    //     if(controlProveedores.existeProdcuto(producto.getCodigo(), producto.getNombre())){
-    //         JOptionPane.showMessageDialog(this, "El proveedor ya existe", "Error", JOptionPane.ERROR_MESSAGE);
-    //     }else{
-    //         int opcion = JOptionPane.showConfirmDialog(this, "¿Deses agregar el nuevo proveedor: "+producto.getNombre()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
+     public void agregar(Proveedor proveedor){
+         if(controlProveedores.existeProveedor(proveedor.getCodigo(), proveedor.getCategoria())){
+             JOptionPane.showMessageDialog(this, "El proveedor ya existe", "Error", JOptionPane.ERROR_MESSAGE);
+         }else{
+             int opcion = JOptionPane.showConfirmDialog(this, "¿Deses agregar el nuevo proveedor: "+proveedor.getCategoria()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
 
-    //         if(opcion == 0){
-    //             controlProveedores.agregarProdcuto(producto);
-    //             setDatosTabla();
-    //             JOptionPane.showMessageDialog(this, "El provedor fue agregado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
-    //         }
-    //     }
-    // }
+             if(opcion == 0){
+                 controlProveedores.agregarProveedor(proveedor);
+                 controlProveedores.agregarInfoProveedor(new InfoProveedor(proveedor, "Agregado"));
+                 setDatosTabla();
+                 JOptionPane.showMessageDialog(this, "El provedor fue agregado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
+             }
+         }
+     }
 
     // // metodo para actualizar datos 
-    // public void actualizar(Producto producto){
-    //     if(controlProveedores.existeProdcuto(producto.getCodigo(), "")){
-    //         int opcion = JOptionPane.showConfirmDialog(this, "¿Deses actualizar el proveedor con codigo: "+producto.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
+     public void actualizar(Proveedor proveedor){
+         if(controlProveedores.existeProveedor(proveedor.getCodigo(), proveedor.getCategoria())){
+             int opcion = JOptionPane.showConfirmDialog(this, "¿Deses actualizar el proveedor con codigo: "+proveedor.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
 
-    //         if(opcion == 0){
-    //             controlProveedores.actualizarProdcuto(producto);
-    //             setDatosTabla();
-    //             JOptionPane.showMessageDialog(this, "El proveedor fue actualizado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
-    //         }
-    //     }else{
-    //         JOptionPane.showMessageDialog(this, "El proveedor NO existe", "Error", JOptionPane.ERROR_MESSAGE);
-    //     } 
-    // }
+             if(opcion == 0){
+                 controlProveedores.actualizarProveedor(proveedor);
+                 controlProveedores.agregarInfoProveedor(new InfoProveedor(proveedor, "Actualizado"));
+                 setDatosTabla();
+                 JOptionPane.showMessageDialog(this, "El proveedor fue actualizado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
+             }
+         }else{
+             JOptionPane.showMessageDialog(this, "El proveedor NO existe", "Error", JOptionPane.ERROR_MESSAGE);
+         } 
+     }
 
     // //metodo para borrar datos 
-    // public void borrar(Producto producto){
-    //     if(controlProveedores.existeProdcuto(producto.getCodigo(), "")){
-    //         int opcion = JOptionPane.showConfirmDialog(this, "¿Deseas borrar el proveedor con codigo: "+producto.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
+     public void borrar(Proveedor proveedor){
+         if(controlProveedores.existeProveedor(proveedor.getCodigo(), "")){
+             int opcion = JOptionPane.showConfirmDialog(this, "¿Deseas borrar el proveedor con codigo: "+proveedor.getCodigo()+"?", "Confirmar",JOptionPane.YES_NO_OPTION);
 
-    //         if(opcion == 0){
-    //             controlProveedores.eliminarProdcuto(producto.getCodigo());
-    //             setDatosTabla();
-    //             JOptionPane.showMessageDialog(this, "El proveedor fue borrado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
-    //         }
-    //     }else{
-    //         JOptionPane.showMessageDialog(this, "El proveedor NO existe", "Error", JOptionPane.ERROR_MESSAGE);
-    //     } 
-    // }
-    
-    //  metodo que genera el informe sobre la base de datos(3 productos con mayor precio)
-    // public void generarInforme(){
-        // ArrayList<Float> listaPrecios = new ArrayList<>();
-        // for(Producto prod : listaProductos.values()){
-        //     listaPrecios.add(prod.precio);
-        // }
-        // Collections.sort(listaPrecios);
-        // Collections.reverse(listaPrecios);
-        
-        // String n1="";
-        // String n2="";
-        // String n3="";
-        // for(Producto prod : listaProductos.values()){
-        //     if(listaPrecios.get(0)==prod.precio){
-        //         n1=prod.nombre;
-        //     }
-        //     if(listaPrecios.get(1)==prod.precio){
-        //         n2=prod.nombre;
-        //     }
-        //     if(listaPrecios.get(2)==prod.precio){
-        //         n3=prod.nombre;
-        //     }
-        // }
-        // labelP1.setText("1. "+n1);
-        // labelP2.setText("2. "+n2);
-        // labelP3.setText("3. "+n3);
-    // }
+             if(opcion == 0){
+                 controlProveedores.eliminarProveedor(proveedor.getCodigo());
+                 controlProveedores.agregarInfoProveedor(new InfoProveedor(proveedor, "Eliminado"));
+                 setDatosTabla();
+                 JOptionPane.showMessageDialog(this, "El proveedor fue borrado", "Operacion completada", JOptionPane.INFORMATION_MESSAGE);
+             }
+         }else{
+             JOptionPane.showMessageDialog(this, "El proveedor NO existe", "Error", JOptionPane.ERROR_MESSAGE);
+         } 
+     }
+    public void actionPerformed(ActionEvent e){ 
+        informe = "Proveedores";
+        Main.newApp.actionPerformed(e);
+    }
 }
